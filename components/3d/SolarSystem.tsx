@@ -5,6 +5,7 @@ import { OrbitControls, Stars } from "@react-three/drei";
 import { Suspense } from "react";
 import Planet from "./Planet";
 import CentralSun from "./CentralSun";
+import ErrorBoundary from "../ErrorBoundary";
 
 export interface PlanetConfig {
   name: string;
@@ -112,18 +113,24 @@ const planets: PlanetConfig[] = [
 
 export default function SolarSystem() {
   return (
-    <div className="w-full h-screen relative">
-      {/* Instructions overlay */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 bg-black/60 backdrop-blur-md border border-primary/30 rounded-lg px-6 py-3">
-        <p className="text-primary text-sm font-mono">
-          🖱️ Drag to rotate • Scroll to zoom • Click planets to navigate
-        </p>
-      </div>
+    <ErrorBoundary>
+      <div className="w-full h-screen relative">
+        {/* Instructions overlay */}
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 bg-black/60 backdrop-blur-md border border-primary/30 rounded-lg px-6 py-3">
+          <p className="text-primary text-sm font-mono">
+            🖱️ Drag to rotate • Scroll to zoom • Click planets to navigate
+          </p>
+        </div>
 
-      <Canvas
-        camera={{ position: [0, 5, 20], fov: 60 }}
-        className="bg-gradient-to-b from-dark-darker to-dark"
-      >
+        <Canvas
+          camera={{ position: [0, 5, 20], fov: 60 }}
+          className="bg-gradient-to-b from-dark-darker to-dark"
+          gl={{
+            antialias: true,
+            alpha: false,
+            powerPreference: "high-performance"
+          }}
+        >
         <Suspense fallback={null}>
           {/* Lighting */}
           <ambientLight intensity={0.3} />
@@ -176,6 +183,7 @@ export default function SolarSystem() {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 }
