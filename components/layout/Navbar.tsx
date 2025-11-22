@@ -22,7 +22,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <div className="text-2xl font-bold">
-              <span className="text-primary">Cipher</span>
+              <span className="text-primary">Cypher</span>
               <span className="text-secondary">0x9</span>
             </div>
           </Link>

@@ -3,7 +3,7 @@ export default function ResearchPage() {
     {
       id: 1,
       title: "Ancient Mathematical Algorithms in Modern Blockchain Consensus",
-      authors: "Cipher0x9 Research Team",
+      authors: "Cypher0x9 Research Team",
       date: "2024-11",
       abstract: "This paper explores the application of ancient mathematical algorithms, particularly those from Greek and Islamic mathematics, in modern blockchain consensus mechanisms.",
       topics: ["Mathematics", "Blockchain", "Consensus"],
@@ -12,7 +12,7 @@ export default function ResearchPage() {
     {
       id: 2,
       title: "Zero-Knowledge Proofs: A Comprehensive Survey",
-      authors: "Cipher0x9 Research Team",
+      authors: "Cypher0x9 Research Team",
       date: "2024-10",
       abstract: "A comprehensive survey of zero-knowledge proof systems, including zk-SNARKs, zk-STARKs, and emerging post-quantum alternatives.",
       topics: ["Cryptography", "ZK-Proofs", "Privacy"],
@@ -21,7 +21,7 @@ export default function ResearchPage() {
     {
       id: 3,
       title: "Post-Quantum Cryptography for Blockchain Applications",
-      authors: "Cipher0x9 Research Team",
+      authors: "Cypher0x9 Research Team",
       date: "2024-09",
       abstract: "Analyzing the threat of quantum computing to current blockchain cryptographic systems and proposing quantum-resistant alternatives.",
       topics: ["Quantum", "Cryptography", "Security"],
@@ -30,7 +30,7 @@ export default function ResearchPage() {
     {
       id: 4,
       title: "Game Theory and Economic Models in DeFi Protocols",
-      authors: "Cipher0x9 Research Team",
+      authors: "Cypher0x9 Research Team",
       date: "2024-08",
       abstract: "Mathematical modeling of economic incentives and game-theoretic strategies in decentralized finance protocols.",
       topics: ["DeFi", "Game Theory", "Economics"],
