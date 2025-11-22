@@ -37,8 +37,8 @@ export default function ContactPage() {
             </span>
           </h1>
           <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-            Have a question or want to collaborate? We'd love to hear from you.
-            Reach out and let's build the future together.
+            Have a question or want to collaborate? We&apos;d love to hear from you.
+            Reach out and let&apos;s build the future together.
           </p>
         </div>
 
