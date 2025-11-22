@@ -1,17 +1,48 @@
+import dynamic from "next/dynamic";
 import Hero from "@/components/sections/Hero";
 import AboutMe from "@/components/sections/AboutMe";
 import ProjectShowcase from "@/components/sections/ProjectShowcase";
-import SocialGarden from "@/components/sections/SocialGarden";
+import EnhancedSocialHub from "@/components/sections/EnhancedSocialHub";
+import WorldIntelligence from "@/components/dashboard/WorldIntelligence";
 import ParticleBackground from "@/components/effects/ParticleBackground";
+
+// Dynamically import 3D components to avoid SSR issues
+const SolarSystem = dynamic(() => import("@/components/3d/SolarSystem"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-screen flex items-center justify-center bg-gradient-to-b from-dark-darker to-dark">
+      <div className="text-center">
+        <div className="text-6xl mb-4 animate-pulse">🌌</div>
+        <p className="text-primary text-xl font-bold animate-pulse">
+          Loading 3D Universe...
+        </p>
+      </div>
+    </div>
+  ),
+});
 
 export default function Home() {
   return (
     <>
       <ParticleBackground />
+
+      {/* 3D Solar System Navigation */}
+      <SolarSystem />
+
+      {/* Hero Section */}
       <Hero />
+
+      {/* World Intelligence Dashboard */}
+      <WorldIntelligence />
+
+      {/* About Me Section */}
       <AboutMe />
+
+      {/* Projects Showcase */}
       <ProjectShowcase />
-      <SocialGarden />
+
+      {/* Enhanced Social Hub with 3D Flip Cards */}
+      <EnhancedSocialHub />
     </>
   );
 }
