@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AnimatedAvatar from "@/components/avatar/AnimatedAvatar";
 
 export default function Hero() {
   return (
@@ -12,24 +13,30 @@ export default function Hero() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center">
           {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 bg-dark-lighter border border-primary/20 rounded-full mb-8">
+          <div className="inline-flex items-center px-4 py-2 bg-dark-lighter border border-primary/20 rounded-full mb-8 animate-fadeIn">
             <span className="text-primary text-sm font-medium">
               ✨ Ancient Math Meets Modern Blockchain
             </span>
           </div>
 
+          {/* Animated Avatar - Centerpiece */}
+          <div className="mb-8">
+            <AnimatedAvatar />
+          </div>
+
           {/* Main heading */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fadeIn">
             <span className="text-white">Welcome to </span>
             <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Cipher0x9
+              Cypher0x9
             </span>
           </h1>
 
           {/* Subheading */}
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            Building the future of Web3 with cryptographic excellence.
-            Exploring the intersection of ancient mathematics and blockchain technology.
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto animate-fadeIn">
+            Web3 Entrepreneur • Ancient Math Researcher • Content Creator
+            <br />
+            <span className="text-primary">Bridging Ancient Wisdom with Modern Innovation</span>
           </p>
 
           {/* CTA Buttons */}

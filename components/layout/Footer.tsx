@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="flex items-center space-x-2 mb-4">
               <div className="text-2xl font-bold">
-                <span className="text-primary">Cipher</span>
+                <span className="text-primary">Cypher</span>
                 <span className="text-secondary">0x9</span>
               </div>
             </Link>
@@ -75,7 +75,7 @@ export default function Footer() {
         <div className="mt-8 pt-8 border-t border-primary/10">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              &copy; {currentYear} Cipher0x9. All rights reserved.
+              &copy; {currentYear} Cypher0x9. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-gray-400 hover:text-primary transition-colors">

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
+import EnhancedNavbar from "@/components/layout/EnhancedNavbar";
 import Footer from "@/components/layout/Footer";
 
 const geistSans = localFont({
@@ -16,8 +16,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Cipher0x9 - Ancient Mathematics Meets Blockchain",
-  description: "Bridging ancient mathematics with blockchain technology. Building the future of Web3 with cryptographic excellence.",
+  title: "Cypher0x9 - Ancient Mathematics Meets Blockchain",
+  description: "Web3 Entrepreneur, Ancient Math Researcher & Content Creator. Bridging ancient wisdom with modern blockchain innovation.",
 };
 
 export default function RootLayout({
@@ -30,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
+        <EnhancedNavbar />
         <main className="pt-16">
           {children}
         </main>

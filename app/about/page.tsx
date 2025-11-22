@@ -7,7 +7,7 @@ export default function AboutPage() {
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
             <span className="text-white">About </span>
             <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Cipher0x9
+              Cypher0x9
             </span>
           </h1>
           <p className="text-gray-400 text-lg max-w-3xl mx-auto">
@@ -20,7 +20,7 @@ export default function AboutPage() {
           <div className="bg-dark-lighter border border-primary/20 rounded-lg p-8">
             <h2 className="text-3xl font-bold text-primary mb-6">Our Mission</h2>
             <p className="text-gray-300 text-lg leading-relaxed mb-4">
-              At Cipher0x9, we believe that the ancient mathematical principles that have stood
+              At Cypher0x9, we believe that the ancient mathematical principles that have stood
               the test of time hold the key to solving modern blockchain challenges. Our mission
               is to bridge the gap between historical mathematical brilliance and contemporary
               cryptographic innovation.

@@ -1,13 +1,17 @@
 import Hero from "@/components/sections/Hero";
-import ProjectsGrid from "@/components/sections/ProjectsGrid";
-import Skills from "@/components/sections/Skills";
+import AboutMe from "@/components/sections/AboutMe";
+import ProjectShowcase from "@/components/sections/ProjectShowcase";
+import SocialGarden from "@/components/sections/SocialGarden";
+import ParticleBackground from "@/components/effects/ParticleBackground";
 
 export default function Home() {
   return (
     <>
+      <ParticleBackground />
       <Hero />
-      <ProjectsGrid />
-      <Skills />
+      <AboutMe />
+      <ProjectShowcase />
+      <SocialGarden />
     </>
   );
 }
