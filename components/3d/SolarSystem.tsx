@@ -108,7 +108,6 @@ const planets: PlanetConfig[] = [
     icon: "⚙️",
   },
 ];
-
 export default function SolarSystem() {
   return (
       <div className="w-full h-screen relative">
