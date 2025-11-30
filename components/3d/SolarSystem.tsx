@@ -5,8 +5,7 @@ import { OrbitControls, Stars } from "@react-three/drei";
 import { Suspense } from "react";
 import Planet from "./Planet";
 import CentralSun from "./CentralSun";
-import ErrorBoundary from "../ErrorBoundary";
-
+import ErrorBoundary from "@/components/ErrorBoundary";
 export interface PlanetConfig {
   name: string;
   color: string;
