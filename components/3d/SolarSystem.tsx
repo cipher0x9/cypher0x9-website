@@ -180,5 +180,4 @@ export default function SolarSystem() {
         </div>
       </div>
       </div>
-    </ErrorBoundary>
 }
