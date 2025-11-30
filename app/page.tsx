@@ -27,7 +27,7 @@ export default function Home() {
 
       {/* 3D Solar System Navigation */}
 <Suspense fallback={<div className="w-full h-screen flex items-center justify-center"><div className="text-6xl animate-pulse">🔮</div></div>}>
-            <SolarSystem />
+{/*             <SolarSystem /> */}
         </Suspense>
 
       {/* Hero Section */}
