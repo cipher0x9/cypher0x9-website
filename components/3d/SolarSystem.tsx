@@ -5,7 +5,6 @@ import { OrbitControls, Stars } from "@react-three/drei";
 import { Suspense } from "react";
 import Planet from "./Planet";
 import CentralSun from "./CentralSun";
-import ErrorBoundary from "@/components/ErrorBoundary";
 export interface PlanetConfig {
   name: string;
   color: string;
@@ -112,7 +111,6 @@ const planets: PlanetConfig[] = [
 
 export default function SolarSystem() {
   return (
-    <ErrorBoundary>
       <div className="w-full h-screen relative">
         {/* Instructions overlay */}
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 bg-black/60 backdrop-blur-md border border-primary/30 rounded-lg px-6 py-3">
@@ -184,5 +182,4 @@ export default function SolarSystem() {
       </div>
       </div>
     </ErrorBoundary>
-  );
 }
