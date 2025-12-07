@@ -33,20 +33,6 @@ const nextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
-          {
-            key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: https:",
-              "font-src 'self' data:",
-              "connect-src 'self' https://api.coingecko.com",
-              "frame-src 'self'",
-              "base-uri 'self'",
-              "form-action 'self'",
-            ].join("; "),
-          },
         ],
       },
     ];
@@ -55,13 +41,41 @@ const nextConfig = {
   reactStrictMode: true,
   // Optimize images
   images: {
-    domains: [],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
     formats: ["image/avif", "image/webp"],
   },
   // Compiler options
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+  // Webpack configuration to handle module resolution issues
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    };
+
+    // Handle optional connector modules
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'porto/internal': false,
+      'porto': false,
+      '@base-org/account': false,
+      '@gemini-wallet/core': false,
+      '@react-native-async-storage/async-storage': false,
+    };
+
+    return config;
+  },
+  // Transpile packages
+  transpilePackages: ['@rainbow-me/rainbowkit', 'wagmi', 'viem'],
 };
 
 export default nextConfig;
