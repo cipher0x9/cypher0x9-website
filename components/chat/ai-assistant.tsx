@@ -130,7 +130,6 @@ function ChatMarkdown({ content }: { content: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
-      className="prose prose-invert prose-sm max-w-none text-white/90"
       components={markdownComponents}
     >
       {content}
