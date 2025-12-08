@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect, FormEvent } from 'react';
+import { useState, useRef, useEffect, FormEvent, useMemo } from 'react';
+import ReactMarkdown, { type Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   MessageSquare,
   X,
@@ -11,6 +13,9 @@ import {
   Minimize2,
   Maximize2,
   Sparkles,
+  Wallet,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -24,6 +29,115 @@ interface AIAssistantProps {
   className?: string;
 }
 
+interface CodeBlockProps {
+  inline?: boolean;
+  className?: string;
+  children: React.ReactNode;
+}
+
+function CodeBlock({ inline = false, className, children }: CodeBlockProps) {
+  const [copied, setCopied] = useState(false);
+  const language = className?.replace('language-', '') ?? 'text';
+  const code = useMemo(
+    () => String(children).replace(/\n$/, ''),
+    [children]
+  );
+
+  if (inline) {
+    return (
+      <code className="rounded bg-white/10 px-1.5 py-0.5 text-xs text-[#00FFB2]">
+        {children}
+      </code>
+    );
+  }
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <div className="group relative my-4">
+      <button
+        type="button"
+        onClick={handleCopy}
+        className="absolute right-3 top-3 flex items-center gap-1 rounded-lg border border-white/10 bg-black/30 px-2 py-1 text-xs text-white/70 opacity-0 transition-all group-hover:opacity-100"
+        aria-label="Copy code"
+      >
+        {copied ? (
+          <>
+            <Check className="h-3.5 w-3.5 text-[#00FFB2]" /> Copied
+          </>
+        ) : (
+          <>
+            <Copy className="h-3.5 w-3.5 text-white/60" /> Copy
+          </>
+        )}
+      </button>
+      <pre className="overflow-auto rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-white/90 shadow-inner shadow-[#00D9FF]/20">
+        <code className={className}>
+          {language !== 'text' && (
+            <span className="mb-2 inline-block text-xs uppercase tracking-wide text-white/40">
+              {language}
+            </span>
+          )}
+          {code}
+        </code>
+      </pre>
+    </div>
+  );
+}
+
+const markdownComponents: Components = {
+  code({ inline, className, children }) {
+    return (
+      <CodeBlock inline={inline} className={className}>
+        {children as React.ReactNode}
+      </CodeBlock>
+    );
+  },
+  p({ children }) {
+    return <p className="leading-relaxed text-white/80">{children}</p>;
+  },
+  a({ children, href }) {
+    return (
+      <a
+        href={href ?? '#'}
+        target="_blank"
+        rel="noreferrer"
+        className="text-[#00D9FF] underline decoration-dotted underline-offset-4 hover:text-[#00FFB2]"
+      >
+        {children}
+      </a>
+    );
+  },
+  ul({ children }) {
+    return <ul className="list-disc space-y-1 pl-6 text-white/80">{children}</ul>;
+  },
+  ol({ children }) {
+    return (
+      <ol className="list-decimal space-y-1 pl-6 text-white/80">{children}</ol>
+    );
+  },
+};
+
+function ChatMarkdown({ content }: { content: string }) {
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      className="prose prose-invert prose-sm max-w-none text-white/90"
+      components={markdownComponents}
+    >
+      {content}
+    </ReactMarkdown>
+  );
+}
+
 export function AIAssistant({ className }: AIAssistantProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -32,15 +146,15 @@ export function AIAssistant({ className }: AIAssistantProps) {
       id: 'welcome',
       role: 'assistant',
       content:
-        "Welcome to the Cosmic OS! I'm your AI guide through CYPHER0X9's universe. Ask me about Web3, AI, blockchain, or anything else you'd like to explore.",
+        'CYPHER AI online. I’m your resident Web3 strategist & AI architect. Ask about protocols, zk proofs, cosmic startups, or anything your curious mind is orbiting. ⚡️',
     },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [walletPrimed, setWalletPrimed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -57,7 +171,8 @@ export function AIAssistant({ className }: AIAssistantProps) {
       content: input.trim(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const conversation = [...messages, userMessage];
+    setMessages(conversation);
     setInput('');
     setIsLoading(true);
     setError(null);
@@ -67,43 +182,36 @@ export function AIAssistant({ className }: AIAssistantProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messages, userMessage].map((m) => ({
+          messages: conversation.map((m) => ({
             role: m.role,
             content: m.content,
           })),
         }),
       });
 
-      if (!response.ok) {
+      if (!response.ok || !response.body) {
         throw new Error('Failed to get response');
       }
 
-      const reader = response.body?.getReader();
+      const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let assistantMessage = '';
-
       const assistantMessageId = `assistant-${Date.now()}`;
+
       setMessages((prev) => [
         ...prev,
         { id: assistantMessageId, role: 'assistant', content: '' },
       ]);
 
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value, { stream: true });
-          assistantMessage += chunk;
-
-          setMessages((prev) =>
-            prev.map((m) =>
-              m.id === assistantMessageId
-                ? { ...m, content: assistantMessage }
-                : m
-            )
-          );
-        }
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        assistantMessage += decoder.decode(value, { stream: true });
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMessageId ? { ...m, content: assistantMessage } : m
+          )
+        );
       }
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Unknown error'));
@@ -112,15 +220,37 @@ export function AIAssistant({ className }: AIAssistantProps) {
     }
   };
 
+  const typingIndicator = (
+    <div className="flex gap-3 animate-fadeIn">
+      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#00D9FF]/15 shadow-lg shadow-[#00D9FF]/20">
+        <Bot className="h-4 w-4 text-[#00D9FF]" />
+      </div>
+      <div className="mr-10 flex-1 rounded-2xl border border-white/5 bg-white/5 px-4 py-3 shadow-lg shadow-[#00D9FF]/10">
+        <p className="text-xs uppercase tracking-[0.2em] text-white/40">
+          CYPHER AI is synthesizing
+        </p>
+        <div className="mt-2 flex items-center gap-1">
+          {[0, 1, 2].map((dot) => (
+            <span
+              key={dot}
+              className="typing-dot"
+              style={{ animationDelay: `${dot * 0.15}s` }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   if (!isOpen) {
     return (
       <button
         onClick={() => setIsOpen(true)}
         className={cn(
-          'fixed bottom-6 right-6 z-50 p-4 rounded-full bg-gradient-to-r from-[#1A0A3D] to-[#6B21A8] border border-[#00D9FF]/30 shadow-lg shadow-[#00D9FF]/20 hover:shadow-[#00D9FF]/40 transition-all duration-300 group',
+          'fixed bottom-6 right-6 z-50 p-4 rounded-full bg-gradient-to-r from-[#1A0A3D] to-[#6B21A8] border border-[#00D9FF]/30 shadow-lg shadow-[#00D9FF]/20 hover:shadow-[#00D9FF]/40 transition-all duration-300 group animate-fadeIn',
           className
         )}
-        aria-label="Open AI Assistant"
+        aria-label="Open CYPHER AI"
       >
         <MessageSquare className="w-6 h-6 text-[#00D9FF] group-hover:scale-110 transition-transform" />
         <span className="absolute top-0 right-0 w-3 h-3 bg-[#00FFB2] rounded-full animate-pulse" />
@@ -131,129 +261,147 @@ export function AIAssistant({ className }: AIAssistantProps) {
   return (
     <div
       className={cn(
-        'fixed bottom-6 right-6 z-50 flex flex-col glass-dark rounded-2xl border border-[#00D9FF]/20 shadow-2xl shadow-[#00D9FF]/10 overflow-hidden transition-all duration-300',
-        isMinimized ? 'w-80 h-14' : 'w-96 h-[500px]',
+        'fixed bottom-6 right-6 z-50 flex flex-col rounded-3xl border border-white/10 bg-gradient-to-b from-[#030014]/90 to-[#04021c]/80 shadow-[0_0_60px_rgba(0,217,255,0.15)] backdrop-blur-2xl transition-all duration-300 animate-fadeIn',
+        isMinimized ? 'w-80 h-16' : 'w-[420px] h-[580px]',
         className
       )}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-gradient-to-r from-[#1A0A3D]/50 to-[#6B21A8]/50">
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Sparkles className="w-5 h-5 text-[#00D9FF]" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#00FFB2] rounded-full animate-pulse" />
+      <div className="flex items-start justify-between border-b border-white/10 px-5 py-4">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-[#00D9FF]/40 blur-xl" />
+              <Sparkles className="relative h-5 w-5 text-[#00D9FF]" />
+            </div>
+            <p className="text-sm font-semibold tracking-wide text-white">
+              CYPHER AI · Command Console
+            </p>
           </div>
-          <span className="font-semibold text-white">Cosmic AI</span>
+          <p className="text-xs text-white/50">
+            Web3 tactician & AI co-pilot. Online status:{' '}
+            <span className="text-[#00FFB2]">stable</span>
+          </p>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setWalletPrimed((prev) => !prev)}
+            className={cn(
+              'flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all',
+              walletPrimed
+                ? 'border-[#00FFB2]/60 bg-[#00FFB2]/10 text-[#00FFB2]'
+                : 'border-white/10 bg-white/5 text-white/70 hover:border-[#00D9FF]/40'
+            )}
+          >
+            <Wallet className="h-3.5 w-3.5" />
+            {walletPrimed ? 'Wallet Primed' : 'Prep Wallet'}
+          </button>
           <button
             onClick={() => setIsMinimized(!isMinimized)}
-            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+            className="rounded-full p-1.5 text-white/60 hover:bg-white/10"
             aria-label={isMinimized ? 'Maximize' : 'Minimize'}
           >
             {isMinimized ? (
-              <Maximize2 className="w-4 h-4 text-white/70" />
+              <Maximize2 className="h-4 w-4" />
             ) : (
-              <Minimize2 className="w-4 h-4 text-white/70" />
+              <Minimize2 className="h-4 w-4" />
             )}
           </button>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+            className="rounded-full p-1.5 text-white/60 hover:bg-white/10"
             aria-label="Close"
           >
-            <X className="w-4 h-4 text-white/70" />
+            <X className="h-4 w-4" />
           </button>
         </div>
       </div>
 
       {!isMinimized && (
         <>
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={cn(
-                  'flex gap-3',
+                  'flex items-start gap-3 animate-fadeIn',
                   message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
                 )}
               >
                 <div
                   className={cn(
-                    'flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center',
+                    'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border shadow-lg',
                     message.role === 'user'
-                      ? 'bg-[#FFD700]/20'
-                      : 'bg-[#00D9FF]/20'
+                      ? 'border-[#FFD700]/30 bg-[#FFD700]/10 text-[#FFD700]'
+                      : 'border-[#00D9FF]/30 bg-[#00D9FF]/10 text-[#00D9FF]'
                   )}
                 >
                   {message.role === 'user' ? (
-                    <User className="w-4 h-4 text-[#FFD700]" />
+                    <User className="h-4 w-4" />
                   ) : (
-                    <Bot className="w-4 h-4 text-[#00D9FF]" />
+                    <Bot className="h-4 w-4" />
                   )}
                 </div>
                 <div
                   className={cn(
-                    'flex-1 px-4 py-3 rounded-2xl text-sm',
+                    'max-w-[70%] rounded-3xl border px-4 py-3 text-sm leading-relaxed shadow-lg backdrop-blur',
                     message.role === 'user'
-                      ? 'bg-[#FFD700]/10 text-white ml-8'
-                      : 'bg-white/5 text-white/90 mr-8'
+                      ? 'border-[#FFD700]/30 bg-gradient-to-br from-[#1A0A3D]/60 to-[#6B21A8]/50 text-white glow-gold'
+                      : 'border-[#00D9FF]/20 bg-white/5 text-white glow-cyan'
                   )}
                 >
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  {message.role === 'assistant' ? (
+                    <ChatMarkdown content={message.content || '...'} />
+                  ) : (
+                    <p className="whitespace-pre-wrap">{message.content}</p>
+                  )}
                 </div>
               </div>
             ))}
 
-            {isLoading && messages[messages.length - 1]?.content === '' && (
-              <div className="flex gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-[#00D9FF]/20 flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-[#00D9FF]" />
-                </div>
-                <div className="flex-1 px-4 py-3 rounded-2xl bg-white/5 mr-8">
-                  <div className="flex items-center gap-2 text-white/60">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span className="text-sm">Thinking...</span>
-                  </div>
-                </div>
-              </div>
-            )}
+            {isLoading && typingIndicator}
 
             {error && (
-              <div className="px-4 py-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                Failed to get response. Please try again.
+              <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                {error.message}
               </div>
             )}
 
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <form
             onSubmit={handleSubmit}
-            className="p-4 border-t border-white/10"
+            className="border-t border-white/10 px-5 py-4"
           >
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask the Cosmic AI..."
-                className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-[#00D9FF]/50 focus:ring-1 focus:ring-[#00D9FF]/50 transition-all"
-                disabled={isLoading}
-              />
-              <button
-                type="submit"
-                disabled={isLoading || !input.trim()}
-                className="p-2.5 rounded-xl bg-gradient-to-r from-[#1A0A3D] to-[#6B21A8] border border-[#00D9FF]/30 hover:border-[#00D9FF]/60 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              >
-                {isLoading ? (
-                  <Loader2 className="w-5 h-5 text-[#00D9FF] animate-spin" />
-                ) : (
-                  <Send className="w-5 h-5 text-[#00D9FF]" />
-                )}
-              </button>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-white/40">
+                <span className="h-1 w-1 rounded-full bg-[#00FFB2] animate-pulse" />
+                Neural uplink waiting for your prompt
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 shadow-inner shadow-[#00D9FF]/10 focus-within:border-[#00D9FF]/50">
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Ask CYPHER about zk, L2s, or cosmic ideas..."
+                    className="w-full bg-transparent text-sm text-white placeholder:text-white/40 focus:outline-none"
+                    disabled={isLoading}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isLoading || !input.trim()}
+                  className="rounded-2xl border border-[#00D9FF]/40 bg-gradient-to-br from-[#1A0A3D] to-[#6B21A8] p-3 text-[#00D9FF] transition-all hover:border-[#00FFB2]/60 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {isLoading ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <Send className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
             </div>
           </form>
         </>

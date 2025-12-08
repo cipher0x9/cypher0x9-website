@@ -83,8 +83,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="font-sans antialiased bg-[#030014] text-white min-h-screen">
+    <html lang="en" data-cosmic-theme="cosmic" suppressHydrationWarning>
+      <body className="font-sans antialiased min-h-screen">
         <Providers>{children}</Providers>
       </body>
     </html>

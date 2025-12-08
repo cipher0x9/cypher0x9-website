@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Sparkles, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { WalletButton } from '@/components/web3/wallet-button';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 
 const navigation = [
   { name: 'Universe', href: '/universe', icon: '🌌' },
@@ -84,6 +85,11 @@ export function Header() {
               <span className="text-white/70">AI Online</span>
             </div>
 
+            {/* Theme Toggle */}
+            <div className="hidden md:block">
+              <ThemeToggle />
+            </div>
+
             {/* Wallet Button */}
             <WalletButton />
 
@@ -103,7 +109,8 @@ export function Header() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-white/10 animate-fadeIn">
+          <div className="md:hidden py-4 border-t border-white/10 animate-fadeIn space-y-4">
+            <ThemeToggle />
             <div className="flex flex-col gap-1">
               {navigation.map((item) => {
                 const isActive = pathname === item.href;

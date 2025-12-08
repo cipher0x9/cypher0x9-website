@@ -6,6 +6,7 @@ import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 import { wagmiConfig } from '@/lib/wagmi-config';
 import { useState, type ReactNode } from 'react';
 import '@rainbow-me/rainbowkit/styles.css';
+import { CosmicThemeProvider } from '@/components/theme/cosmic-theme-provider';
 
 interface ProvidersProps {
   children: ReactNode;
@@ -37,7 +38,7 @@ export function Providers({ children }: ProvidersProps) {
           })}
           modalSize="compact"
         >
-          {children}
+          <CosmicThemeProvider>{children}</CosmicThemeProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
