@@ -2,10 +2,10 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
-import { wagmiConfig } from '@/lib/wagmi-config';
+// import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+// import { wagmiConfig } from '@/lib/wagmi-config';
 import { useState, type ReactNode } from 'react';
-import '@rainbow-me/rainbowkit/styles.css';
+// import '@rainbow-me/rainbowkit/styles.css';
 import { CosmicThemeProvider } from '@/components/theme/cosmic-theme-provider';
 
 interface ProvidersProps {
@@ -26,9 +26,9 @@ export function Providers({ children }: ProvidersProps) {
   );
 
   return (
-    <WagmiProvider config={wagmiConfig}>
+{/*     <WagmiProvider config={wagmiConfig}> */}
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
+        {/* <RainbowKitProvider
           theme={darkTheme({
             accentColor: '#00D9FF',
             accentColorForeground: 'white',
@@ -37,10 +37,10 @@ export function Providers({ children }: ProvidersProps) {
             overlayBlur: 'small',
           })}
           modalSize="compact"
-        >
+        > */}
           <CosmicThemeProvider>{children}</CosmicThemeProvider>
-        </RainbowKitProvider>
+{/*         </RainbowKitProvider> */}
       </QueryClientProvider>
-    </WagmiProvider>
+{/*     </WagmiProvider> */}
   );
 }
