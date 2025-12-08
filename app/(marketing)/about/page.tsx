@@ -1,4 +1,3 @@
-'use client';
 import { Metadata } from 'next';
 import {
   Globe,
@@ -236,3 +235,6 @@ export default function AboutPage() {
     </div>
   );
 }
+
+// Force dynamic rendering to avoid SSR issues
+export const dynamic = 'force-dynamic';
