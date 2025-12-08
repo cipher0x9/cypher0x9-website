@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-mport { useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { CosmicThemeProvider } from '@/components/theme/cosmic-theme-provider';
 
 interface ProvidersProps {
