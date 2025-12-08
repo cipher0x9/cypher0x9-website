@@ -261,3 +261,5 @@ export default function LandingPage() {
   );
 }
 
+export const dynamic = 'force-dynamic';
+
