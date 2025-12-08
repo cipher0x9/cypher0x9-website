@@ -259,3 +259,5 @@ export default function BuildPage() {
     </>
   );
 }
+
+export const dynamic = 'force-dynamic';
