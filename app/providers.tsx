@@ -1,11 +1,7 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
-// import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
-// import { wagmiConfig } from '@/lib/wagmi-config';
-import { useState, type ReactNode } from 'react';
-// import '@rainbow-me/rainbowkit/styles.css';
+mport { useState, type ReactNode } from 'react';
 import { CosmicThemeProvider } from '@/components/theme/cosmic-theme-provider';
 
 interface ProvidersProps {
