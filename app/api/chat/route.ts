@@ -1,9 +1,18 @@
 import { streamText } from 'ai';
 import { createAnthropic } from '@ai-sdk/anthropic';
+import { createOpenAI } from '@ai-sdk/openai';
 
-const anthropic = createAnthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const anthropic = process.env.ANTHROPIC_API_KEY
+  ? createAnthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    })
+  : null;
+
+const openai = process.env.OPENAI_API_KEY
+  ? createOpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  : null;
 
 const SYSTEM_PROMPT = `You are the AI assistant embedded in CYPHER0X9's Cosmic OS - a personal universe exploring the intersection of decentralized technology, artificial intelligence, and digital innovation.
 
@@ -39,8 +48,23 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = streamText({
-      model: anthropic('claude-sonnet-4-20250514'),
+    const model =
+      anthropic?.('claude-sonnet-4-20250514') ??
+      openai?.('gpt-4o-mini') ??
+      null;
+
+    if (!model) {
+      return Response.json(
+        {
+          error:
+            'No AI provider configured. Please set ANTHROPIC_API_KEY or OPENAI_API_KEY.',
+        },
+        { status: 500 }
+      );
+    }
+
+    const result = await streamText({
+      model,
       system: SYSTEM_PROMPT,
       messages,
       temperature: 0.7,

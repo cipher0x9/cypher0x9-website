@@ -44,9 +44,9 @@ cd cypher0x9-website
 npm install
 
 # Copy environment variables
-cp .env.local.example .env.local
+cp .env.example .env.local
 
-# Fill in your API keys in .env.local
+# Fill in your API keys in .env.local (at minimum OPENAI_API_KEY or ANTHROPIC_API_KEY)
 
 # Start development server
 npm run dev
@@ -87,7 +87,7 @@ cypher0x9/
 │   ├── utils.ts              # Utility functions
 │   ├── wagmi-config.ts       # Web3 configuration
 │   └── ai-models.ts          # AI model routing
-└── .env.local.example        # Environment template
+└── .env.example             # Environment template
 ```
 
 ## Environment Variables
@@ -96,8 +96,8 @@ Create a `.env.local` file with the following:
 
 ```bash
 # AI Providers
-ANTHROPIC_API_KEY=           # Claude (required for chat)
-OPENAI_API_KEY=              # GPT-4 (optional)
+ANTHROPIC_API_KEY=           # Claude (required if you want Claude)
+OPENAI_API_KEY=              # GPT-4 (used as fallback/default if no Claude)
 GOOGLE_AI_API_KEY=           # Gemini (optional)
 XAI_API_KEY=                 # Grok (optional)
 PERPLEXITY_API_KEY=          # Perplexity (optional)
@@ -106,7 +106,7 @@ PERPLEXITY_API_KEY=          # Perplexity (optional)
 NEXT_PUBLIC_WALLET_CONNECT_ID=  # WalletConnect Project ID
 ```
 
-See `.env.local.example` for the complete list.
+See `.env.example` for the complete list.
 
 ## AI Router
 
@@ -150,6 +150,13 @@ npm run build
 # Deploy to Vercel
 npx vercel --prod
 ```
+
+### Vercel Environment Setup
+
+1. In your Vercel project, navigate to **Settings → Environment Variables**.
+2. Add `ANTHROPIC_API_KEY` (Claude) and/or `OPENAI_API_KEY` (fallback model) with the same values you use locally.
+3. If you rely on additional providers (Gemini, Grok, Perplexity), add their keys as well.
+4. Trigger a redeploy so the new keys are available to the `AI Router` and `Cosmic AI` chat.
 
 ## Roadmap
 
