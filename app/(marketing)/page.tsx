@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -14,6 +14,11 @@ import {
 // Animated star background component
 function StarField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -127,6 +132,10 @@ function StarField() {
       cancelAnimationFrame(animationId);
     };
   }, []);
+
+    if (!isMounted) {
+    return null;
+  }
 
   return (
     <canvas
