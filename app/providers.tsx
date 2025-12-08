@@ -26,21 +26,8 @@ export function Providers({ children }: ProvidersProps) {
   );
 
   return (
-{/*     <WagmiProvider config={wagmiConfig}> */}
-      <QueryClientProvider client={queryClient}>
-        {/* <RainbowKitProvider
-          theme={darkTheme({
-            accentColor: '#00D9FF',
-            accentColorForeground: 'white',
-            borderRadius: 'large',
-            fontStack: 'system',
-            overlayBlur: 'small',
-          })}
-          modalSize="compact"
-        > */}
-          <CosmicThemeProvider>{children}</CosmicThemeProvider>
-{/*         </RainbowKitProvider> */}
-      </QueryClientProvider>
-{/*     </WagmiProvider> */}
+    <QueryClientProvider client={queryClient}>
+      <CosmicThemeProvider>{children}</CosmicThemeProvider>
+    </QueryClientProvider>
   );
 }
