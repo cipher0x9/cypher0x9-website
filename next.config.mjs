@@ -75,7 +75,6 @@ const nextConfig = {
     return config;
   },
   // Transpile packages
-  transpilePackages: ['@rainbow-me/rainbowkit', 'wagmi', 'viem'],
   // Experimental - disable automatic static optimization
   experimental: {
     serverComponentsExternalPackages: ['@rainbow-me/rainbowkit', 'wagmi', 'viem'],
