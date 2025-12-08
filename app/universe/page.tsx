@@ -216,3 +216,6 @@ export default function UniversePage() {
     </>
   );
 }
+
+
+export const dynamic = 'force-dynamic';
