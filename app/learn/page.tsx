@@ -247,3 +247,5 @@ export default function LearnPage() {
     </>
   );
 }
+
+export const dynamic = 'force-dynamic';
