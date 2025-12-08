@@ -94,9 +94,9 @@ function CodeBlock({ inline = false, className, children }: CodeBlockProps) {
 }
 
 const markdownComponents: Components = {
-  code({ inline, className, children }) {
+  code({ className, children }) {
     return (
-      <CodeBlock inline={inline} className={className}>
+      <CodeBlock className={className}>
         {children as React.ReactNode}
       </CodeBlock>
     );
